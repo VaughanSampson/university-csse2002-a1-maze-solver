@@ -3,25 +3,25 @@ package models;
 import java.awt.*;
 
 /**
- * Wall component for a maze.
+ * Empty space component for a maze.
  */
-public class MazeWall implements MazeComponent {
+public class MazeEmpty implements MazeComponent {
 
     /**
-     * Get whether a wall can be travelled over.
+     * Get whether this component be travelled over.
      * @return False.
      */
     @Override
     public boolean IsTraversable() {
-        return false;
+        return true;
     }
 
     /**
-     * Get a color for rendering a wall component.
-     * @return The color white.
+     * Get a color for rendering this component.
+     * @return Null.
      */
     @Override
-    public Color getColor() { return Color.white; }
+    public Color getColor() { return null; }
 
     /**
      * String representation for debugging.
@@ -29,6 +29,6 @@ public class MazeWall implements MazeComponent {
      */
     @Override
     public String toString() {
-        return "Wall";
+        return "Empty";
     }
 }

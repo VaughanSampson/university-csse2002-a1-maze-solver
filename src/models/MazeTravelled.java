@@ -3,12 +3,12 @@ package models;
 import java.awt.*;
 
 /**
- * End tile component for a maze.
+ * Travelled tile component for a maze.
  */
-public class MazeEnd implements MazeComponent {
+public class MazeTravelled implements MazeComponent {
 
     /**
-     * Get whether an end tile can be travelled over.
+     * Get whether a travelled tile can be travelled over.
      * @return True.
      */
     @Override
@@ -17,12 +17,12 @@ public class MazeEnd implements MazeComponent {
     }
 
     /**
-     * Get a color for rendering an end tile component.
-     * @return The color green.
+     * Get a color for rendering a travelled tile component.
+     * @return The color gray.
      */
     @Override
     public Color getColor() {
-        return Color.green;
+        return Color.gray;
     }
 
     /**
@@ -31,6 +31,6 @@ public class MazeEnd implements MazeComponent {
      */
     @Override
     public String toString() {
-        return "End";
+        return "Travelled";
     }
 }

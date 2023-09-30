@@ -4,16 +4,65 @@ import exceptions.MazeMalformedException;
 import exceptions.MazeSizeMissmatchException;
 import io.FileInterface;
 
-import java.io.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 
+import java.util.HashMap;
+
+/**
+ * Generates and maintains a complete model of a maze.
+ */
 public class Maze implements FileInterface {
-    public Maze(String fileName){
-        char[][] map;
-        try {
-            map = load(fileName);
-        } catch (Exception e)
-        {
 
+    private final int width, height;
+    private MazeComponent[][] map;
+    private final HashMap<Character, MazeComponent> characterToComponent = new HashMap<Character, MazeComponent>(){{
+        put('#', new MazeWall());
+        put('S', new MazeStart());
+        put('E', new MazeEnd());
+        put(' ', new MazeEmpty());
+    }};
+
+    /**
+     * Constructs a maze by reading a file and converting chars into MazeComponent objects
+     * to populate a 2D array.
+     * @param fileName Name of file to read.
+     * @throws MazeMalformedException      If the maze file data is not correctly formatted.
+     * @throws MazeSizeMissmatchException  If the maze file dimensions do not match the provided size.
+     * @throws IllegalArgumentException     If a char in the given maze file does not map to a MazeComponent.
+     * @throws FileNotFoundException        If the maze file is not found.
+     */
+    public Maze(String fileName) throws MazeMalformedException, MazeSizeMissmatchException, IllegalArgumentException, FileNotFoundException {
+        char[][] map = load(fileName);
+        this.width = map.length;
+        this.height = map[0].length;
+        populateMapFromCharMap(map);
+    }
+
+    /**
+     * Converts a 2D array of chars into a 2D array of MazeComponent objects.
+     * @param map Char map.
+     * @throws IllegalArgumentException If a char in the given char map does not map to a MazeComponent.
+     */
+    private void populateMapFromCharMap(char[][] map) throws IllegalArgumentException{
+        System.out.println("hello world 2");
+        // Create map
+        this.map = new MazeComponent[this.width][this.height];
+
+        // Populate map
+        for(int x = 0; x < this.width; x++){
+            for(int y = 0; y < this.height; y++)
+            {
+                if(!characterToComponent.containsKey(map[x][y]))
+                    throw new IllegalArgumentException("Map should not contain symbol " + map[x][y]);
+
+                MazeComponent component = characterToComponent.get(map[x][y]);
+                this.map[x][y] = component;
+                System.out.println(component.toString());
+            }
         }
     }
 
@@ -23,8 +72,8 @@ public class Maze implements FileInterface {
      * @param filename The path to the maze file to be loaded.
      * @return A 2D character array representing the loaded maze.
      * @throws MazeMalformedException      If the maze data is not correctly formatted.
-     * @throws MazeSizeMissmatchException  If the maze dimensions do not match the provided size.
-     * @throws IllegalArgumentException     For other validation errors.
+     * @throws MazeSizeMissmatchException  If the maze dimensions do not match the provided size
+     * @throws IllegalArgumentException    If a char in the maze file's map does not map to any MazeComponent.
      * @throws FileNotFoundException        If the maze file is not found.
      */
     @Override
@@ -73,8 +122,11 @@ public class Maze implements FileInterface {
             if(line.length() < width)
                 throw new MazeSizeMissmatchException( "Row " + y + "of the maze is shorter than specified.");
 
-            for(int x = 0; x < width; x++)
+            for(int x = 0; x < width; x++) {
                 map[x][y] = line.charAt(x);
+                if(!characterToComponent.containsKey(map[x][y]))
+                    throw new IllegalArgumentException("Map should not contain symbol " + map[x][y]);
+            }
         }
 
         try {
@@ -86,4 +138,30 @@ public class Maze implements FileInterface {
 
         return map;
     }
+
+    /**
+     * Gets the component at particular coordinates.
+     * @param x X coordinate of component.
+     * @param y Y coordinate of component.
+     * @return MazeComponent object at the given position.
+     * @throws IndexOutOfBoundsException If coordinates entered are outside the map's bounds.
+     */
+    public MazeComponent getComponent(int x, int y) throws IndexOutOfBoundsException {
+        if(x < 0 || x >= width || y < 0 || y >= height)
+            throw new IndexOutOfBoundsException("Coordinate (" + x + "," + y + ") is outside bounds of map.");
+        return map[x][y];
+    }
+
+    /**
+     * Gets the width of the map.
+     * @return Width.
+     */
+    public int getWidth(){ return  width; }
+
+    /**
+     * Gets the height of the map.
+     * @return Height.
+     */
+    public int getHeight(){ return  height; }
+
 }

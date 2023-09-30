@@ -9,7 +9,7 @@ public class MazeStart implements MazeComponent {
 
     /**
      * Get whether a start tile can be travelled over.
-     * @return False.
+     * @return True.
      */
     @Override
     public boolean IsTraversable() {
@@ -23,5 +23,14 @@ public class MazeStart implements MazeComponent {
     @Override
     public Color getColor() {
         return Color.red;
+    }
+
+    /**
+     * String representation for debugging.
+     * @return String representation.
+     */
+    @Override
+    public String toString() {
+        return "Start";
     }
 }
