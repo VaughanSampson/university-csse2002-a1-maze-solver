@@ -3,6 +3,7 @@ package models;
 import exceptions.MazeMalformedException;
 import exceptions.MazeSizeMissmatchException;
 import io.FileInterface;
+import javafx.geometry.Pos;
 
 import java.awt.*;
 import java.io.File;
@@ -19,11 +20,13 @@ public class Maze implements FileInterface {
 
     private final int width, height;
     private MazeComponent[][] map;
+    private Position start, end;
+
     private final HashMap<Character, MazeComponent> characterToComponent = new HashMap<Character, MazeComponent>(){{
-        put('#', new MazeWall());
-        put('S', new MazeStart());
-        put('E', new MazeEnd());
-        put(' ', new MazeEmpty());
+        put('#', new MazeComponent(false, Color.white, "wall"));
+        put('S', new MazeComponent(true, Color.red, "start"));
+        put('E', new MazeComponent(true, Color.green, "end"));
+        put(' ', new MazeComponent(true, Color.darkGray, "space"));
     }};
 
     /**
@@ -47,7 +50,7 @@ public class Maze implements FileInterface {
      * @param map Char map.
      * @throws IllegalArgumentException If a char in the given char map does not map to a MazeComponent.
      */
-    private void populateMapFromCharMap(char[][] map) throws IllegalArgumentException{
+    private void populateMapFromCharMap(char[][] map) throws IllegalArgumentException, MazeMalformedException{
         // Create map
         this.map = new MazeComponent[this.width][this.height];
 
@@ -59,6 +62,20 @@ public class Maze implements FileInterface {
                     throw new IllegalArgumentException("Map should not contain symbol " + map[x][y]);
 
                 MazeComponent component = characterToComponent.get(map[x][y]);
+
+                // Get start and end
+                if(component.getName().equals("start")) {
+                    if(start != null)
+                        throw new MazeMalformedException("Multiple starts defined in map.");
+                    start = new Position(x, y);
+                }
+
+                if(component.getName().equals("end")) {
+                    if(end != null)
+                        throw new MazeMalformedException("Multiple ends defined in map.");
+                    end = new Position(x, y);
+                }
+
                 this.map[x][y] = component;
             }
         }
@@ -164,12 +181,28 @@ public class Maze implements FileInterface {
      * Gets the width of the map.
      * @return Width.
      */
-    public int getWidth(){ return  width; }
+    public int getWidth(){ return width; }
 
     /**
      * Gets the height of the map.
      * @return Height.
      */
-    public int getHeight(){ return  height; }
+    public int getHeight(){ return height; }
+
+    /**
+     * Gets the start position of the Maze.
+     * @return The start position of the maze.
+     */
+    public Position getStart(){
+        return start;
+    }
+
+    /**
+     * Gets the end position of the Maze.
+     * @return The end position of the maze.
+     */
+    public Position getEnd(){
+        return end;
+    }
 
 }

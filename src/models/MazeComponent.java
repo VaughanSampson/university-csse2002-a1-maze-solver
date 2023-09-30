@@ -3,18 +3,29 @@ package models;
 import java.awt.*;
 
 /**
- * Interface for maze component.
+ * Class for maze components.
  */
-public interface MazeComponent {
+public class MazeComponent {
+
+    private String name;
+    private final boolean isTraversable;
+    private final Color color;
 
     /**
-     * Get whether this component can be travelled over.
+     * Constructs a MazeComponent.
+     * @param isTraversable Can this component be travelled over.
+     * @param color The color to represent this component.
+     * @param name What is this component called.
      */
-    boolean IsTraversable();
+    public MazeComponent(boolean isTraversable, Color color, String name){
+        this.isTraversable = isTraversable;
+        this.color = color;
+        this.name = name;
+    }
 
-    /**
-     * Get a color for rendering a maze component as a square.
-     */
-    Color getColor();
+    public Color getColor(){ return color; }
+    public boolean IsTraversable(){ return isTraversable; }
+
+    public String getName(){ return name; }
 
 }
