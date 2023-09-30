@@ -21,7 +21,7 @@ public class MazeEmpty implements MazeComponent {
      * @return Null.
      */
     @Override
-    public Color getColor() { return null; }
+    public Color getColor() { return Color.darkGray; }
 
     /**
      * String representation for debugging.

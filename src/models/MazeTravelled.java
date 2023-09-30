@@ -22,7 +22,7 @@ public class MazeTravelled implements MazeComponent {
      */
     @Override
     public Color getColor() {
-        return Color.gray;
+        return Color.cyan;
     }
 
     /**

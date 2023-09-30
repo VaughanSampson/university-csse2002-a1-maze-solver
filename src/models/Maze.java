@@ -48,7 +48,6 @@ public class Maze implements FileInterface {
      * @throws IllegalArgumentException If a char in the given char map does not map to a MazeComponent.
      */
     private void populateMapFromCharMap(char[][] map) throws IllegalArgumentException{
-        System.out.println("hello world 2");
         // Create map
         this.map = new MazeComponent[this.width][this.height];
 
@@ -61,7 +60,6 @@ public class Maze implements FileInterface {
 
                 MazeComponent component = characterToComponent.get(map[x][y]);
                 this.map[x][y] = component;
-                System.out.println(component.toString());
             }
         }
     }
@@ -137,6 +135,16 @@ public class Maze implements FileInterface {
         }
 
         return map;
+    }
+
+    public Color[][] getColorMap(){
+        Color[][] colorMap = new Color[width][height];
+        for(int x = 0; x < width; x ++){
+            for(int y = 0; y < height; y ++){
+                colorMap[x][y] = map[x][y].getColor();
+            }
+        }
+        return colorMap;
     }
 
     /**

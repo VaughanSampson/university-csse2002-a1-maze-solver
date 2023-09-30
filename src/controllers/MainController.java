@@ -1,22 +1,26 @@
 package controllers;
 
 import models.Maze;
-import view.MasterView;
+import view.MasterFrame;
 
 public class MainController {
 
     private Maze maze;
-    private MasterView view;
+    private MasterFrame masterView;
 
     public MainController(){
+        masterView = new MasterFrame();
+        maze = LoadMap("small.txt");
+        masterView.beginNewMazeCanvas();
+        masterView.setMazeColorMap(maze.getColorMap());
     }
 
-    public void LoadMap(String fileName){
+    private static Maze LoadMap(String fileName){
         try {
-            this.maze = new Maze(fileName);
-        }catch (Exception e) {
-
+            return new Maze(fileName);
+        } catch (Exception e) {
+            // DEAL WITH EXCEPTION
         }
+        return null;
     }
-
 }
