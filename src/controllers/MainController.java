@@ -3,7 +3,7 @@ package controllers;
 import models.Maze;
 import models.MazeComponent;
 import models.Position;
-import view.MasterFrame;
+import view.MainView;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class MainController {
 
     private Maze maze;
-    private MasterFrame masterView;
+    private MainView masterView;
 
     private final Position[] possibleMovements = {
             new Position(1,0),
@@ -21,11 +21,20 @@ public class MainController {
     };
 
     public MainController(){
-        masterView = new MasterFrame();
-        maze = LoadMap("medium.txt");
-        assert maze != null;
-        findAndDrawPathToEndpoint(maze.getStart());
-        masterView.createMazeColorMap(maze.getColorMap());
+        masterView = new MainView();
+        StartMaze("medium.txt");
+    }
+
+    public void StartMaze(String fileName){
+        maze = LoadMap(fileName);
+        if(maze != null) {
+            boolean endExists = (findAndDrawPathToEndpoint(maze.getStart()) != null);
+            masterView.createNewDisplay(maze.getColorMap(), endExists? "Found path." : "No Path exists.");
+        }
+        else {
+            masterView.createNewDisplay(null, "No maze found.");
+        }
+
     }
 
     private static Maze LoadMap(String fileName){

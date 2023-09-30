@@ -3,12 +3,12 @@ package view;
 import java.awt.*;
 import javax.swing.JPanel;
 
-public class MazeCanvas extends JPanel {
+public class MazePanel extends JPanel {
 
     private final int x, y, width, height, tileWidth;
     private final Color[][] colorMap;
 
-    public MazeCanvas(int x, int y, int width, int height, int tileWidth, Color[][] colorMap){
+    public MazePanel(int x, int y, int width, int height, int tileWidth, Color[][] colorMap){
         super();
         this.x = x;
         this.y = y;
@@ -33,6 +33,15 @@ public class MazeCanvas extends JPanel {
                 }
             }
         }
+
+        /*
+        // Display message
+        g.setFont(new Font("Arial", Font.PLAIN, 30));
+        FontMetrics metrics = g.getFontMetrics();
+        int x = (width - metrics.stringWidth(displayText)) / 2;
+        int y = height - 63;
+        g.drawString(displayText, x, y);
+        */
     }
 
 }

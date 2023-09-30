@@ -20,7 +20,7 @@ public class Maze implements FileInterface {
     private MazeComponent[][] map;
     private Position start, end;
 
-    private final HashMap<Character, MazeComponent> characterToComponent = new HashMap<Character, MazeComponent>(){{
+    private static final HashMap<Character, MazeComponent> characterToComponent = new HashMap<Character, MazeComponent>(){{
         put('#', new MazeComponent(false, Color.black, "wall"));
         put('S', new MazeComponent(false, Color.red, "start"));
         put('E', new MazeComponent(true, Color.green, "end"));
@@ -58,25 +58,12 @@ public class Maze implements FileInterface {
         for(int x = 0; x < this.width; x++){
             for(int y = 0; y < this.height; y++)
             {
-                if(!characterToComponent.containsKey(map[x][y]))
-                    throw new IllegalArgumentException("Map should not contain symbol " + map[x][y]);
-
                 MazeComponent component = characterToComponent.get(map[x][y]);
+                this.map[x][y] = component;
 
                 // Get start and end
-                if(component.getName().equals("start")) {
-                    if(start != null)
-                        throw new MazeMalformedException("Multiple starts defined in map.");
-                    start = new Position(x, y);
-                }
-
-                if(component.getName().equals("end")) {
-                    if(end != null)
-                        throw new MazeMalformedException("Multiple ends defined in map.");
-                    end = new Position(x, y);
-                }
-
-                this.map[x][y] = component;
+                if(component.getName().equals("start")) start = new Position(x, y);
+                if(component.getName().equals("end")) end = new Position(x, y);
             }
         }
     }
@@ -120,10 +107,13 @@ public class Maze implements FileInterface {
 
             String[] dimensions = dimensionsLine.split(" ");
             if (dimensions.length < 2)
-                throw new MazeMalformedException("2 dimensions were note defined in: " + path);
+                throw new MazeMalformedException("2 dimensions were not defined in the maze.");
 
             int height = Integer.parseInt(dimensions[0]);
             int width = Integer.parseInt(dimensions[1]);
+
+            if(height % 2 != 1 || width % 2 != 1)
+                throw new MazeMalformedException("The dimensions of the maze must be odd.");
 
             int startPointCount = 0, endPointCount = 0;
 
@@ -146,7 +136,8 @@ public class Maze implements FileInterface {
                 for (int x = 0; x < width; x++) {
 
                     if (!characterToComponent.containsKey(line.charAt(x)))
-                        throw new IllegalArgumentException("Map should not contain symbol " + map[x][y]);
+                        throw new IllegalArgumentException(
+                                "The maze should not contain the symbol '" + map[x][y] + "'");
                     if (line.charAt(x) == 'E') endPointCount++;
                     if (line.charAt(x) == 'S') startPointCount++;
 
@@ -154,17 +145,16 @@ public class Maze implements FileInterface {
                 }
             }
 
-            // Ensure there was only one start and one end
+            // Check that there was is one start and one end
             if (startPointCount != 1 || endPointCount != 1)
                 throw new MazeMalformedException("There was not 1 start and 1 end in the maze.");
 
         } catch (IOException e) {
             // HANDLE
         }
-        
+
         return map;
     }
-
 
     public Color[][] getColorMap(){
         Color[][] colorMap = new Color[width][height];
