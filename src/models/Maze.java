@@ -23,10 +23,10 @@ public class Maze implements FileInterface {
     private Position start, end;
 
     private final HashMap<Character, MazeComponent> characterToComponent = new HashMap<Character, MazeComponent>(){{
-        put('#', new MazeComponent(false, Color.white, "wall"));
-        put('S', new MazeComponent(true, Color.red, "start"));
+        put('#', new MazeComponent(false, Color.black, "wall"));
+        put('S', new MazeComponent(false, Color.red, "start"));
         put('E', new MazeComponent(true, Color.green, "end"));
-        put(' ', new MazeComponent(true, Color.darkGray, "space"));
+        put(' ', new MazeComponent(true, Color.gray, "space"));
     }};
 
     /**
@@ -118,8 +118,8 @@ public class Maze implements FileInterface {
         if(dimensions.length < 2)
             throw new MazeMalformedException("2 dimensions were note defined in: " + path);
 
-        int width = Integer.parseInt(dimensions[0]);
-        int height = Integer.parseInt(dimensions[1]);
+        int height = Integer.parseInt(dimensions[0]);
+        int width = Integer.parseInt(dimensions[1]);
 
         // Populate 2D Char array
         char[][] map = new char[width][height];
@@ -166,15 +166,21 @@ public class Maze implements FileInterface {
 
     /**
      * Gets the component at particular coordinates.
-     * @param x X coordinate of component.
-     * @param y Y coordinate of component.
+     * @param pos Position of component.
      * @return MazeComponent object at the given position.
      * @throws IndexOutOfBoundsException If coordinates entered are outside the map's bounds.
      */
-    public MazeComponent getComponent(int x, int y) throws IndexOutOfBoundsException {
-        if(x < 0 || x >= width || y < 0 || y >= height)
-            throw new IndexOutOfBoundsException("Coordinate (" + x + "," + y + ") is outside bounds of map.");
-        return map[x][y];
+    public MazeComponent getComponent(Position pos) throws IndexOutOfBoundsException {
+        if(pos.getX() >= width || pos.getY() >= height)
+            throw new IndexOutOfBoundsException("Position (" + pos.getX() + "," + pos.getY() + ") is outside bounds of map.");
+        return map[pos.getX()][pos.getY()];
+    }
+
+    public void setComponent(Position pos, MazeComponent mazeComponent)throws IndexOutOfBoundsException {
+        if (pos.getX() < 0 || pos.getX() >= width || pos.getY() < 0 || pos.getY() >= height)
+            throw new IndexOutOfBoundsException("Position (" + pos.getX() + "," + pos.getY() + ") is outside bounds of map.");
+        if(!getComponent(pos).getName().equals("start") && !getComponent(pos).getName().equals("end"))
+            map[pos.getX()][pos.getY()] = mazeComponent;
     }
 
     /**

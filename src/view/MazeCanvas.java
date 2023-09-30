@@ -6,15 +6,16 @@ import javax.swing.JPanel;
 public class MazeCanvas extends JPanel {
 
     private final int x, y, width, height, tileWidth;
-    private Color[][] colorMap = null;
+    private final Color[][] colorMap;
 
-    public MazeCanvas(int x, int y, int width, int height, int tileWidth){
+    public MazeCanvas(int x, int y, int width, int height, int tileWidth, Color[][] colorMap){
         super();
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.tileWidth = tileWidth;
+        this.colorMap = colorMap;
     }
 
     @Override
@@ -22,10 +23,6 @@ public class MazeCanvas extends JPanel {
         // Setup
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-
-        // Background
-        g2d.setColor(Color.lightGray);
-        g2d.fillRect(x, y, width, height);
 
         // Draw color tiles
         if(colorMap != null) {
@@ -38,7 +35,4 @@ public class MazeCanvas extends JPanel {
         }
     }
 
-    public void SetColorMap(Color[][] colorMap) {
-        this.colorMap = colorMap;
-    }
 }

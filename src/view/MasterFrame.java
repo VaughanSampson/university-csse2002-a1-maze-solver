@@ -16,16 +16,18 @@ public class MasterFrame {
         frame.setVisible(true);
     }
 
-    public void beginNewMazeCanvas(){
+    public void createMazeColorMap(Color[][] colorMap){
         if(canvas != null) {
             frame.remove(canvas);
         }
 
-        canvas = new MazeCanvas(0, 50, frame.getWidth(), frame.getHeight()-150, 20);
+        // Variables to centre maze visual
+        int yMargin = 100;
+        int tileWidth = (frame.getHeight()-(yMargin*2))/colorMap[0].length;
+        int xMargin = (frame.getWidth() - (tileWidth * colorMap.length))/2;
+
+        canvas = new MazeCanvas(xMargin, yMargin, frame.getWidth(), frame.getHeight(), tileWidth, colorMap);
         frame.add(canvas);
-    }
-    public void setMazeColorMap(Color[][] colorMap){
-        canvas.SetColorMap(colorMap);
     }
 
 
