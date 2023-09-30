@@ -86,7 +86,7 @@ public class Maze implements FileInterface {
 
         // Get relative path
         String filePath = new File("").getAbsolutePath();
-        String path = filePath+"\\"+filename;
+        String path = filePath+"\\mazes\\"+filename;
 
         // Create stream
         FileReader fileReader = new FileReader(path);

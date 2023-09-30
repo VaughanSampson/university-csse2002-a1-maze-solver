@@ -19,6 +19,7 @@ public class MainView {
 
     public void createNewDisplay(Color[][] colorMap, String message){
         //
+        if(label != null) { panel.remove(label); }
         if(panel != null) { frame.remove(panel); }
 
         if(colorMap != null) {

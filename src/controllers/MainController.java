@@ -20,9 +20,9 @@ public class MainController {
             new Position(-1,0)
     };
 
-    public MainController(){
+    public MainController(String firstPath){
         masterView = new MainView();
-        StartMaze("medium.txt");
+        StartMaze(firstPath);
     }
 
     public void StartMaze(String fileName){
