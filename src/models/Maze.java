@@ -6,11 +6,9 @@ import io.FileInterface;
 import javafx.geometry.Pos;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -28,6 +26,8 @@ public class Maze implements FileInterface {
         put('E', new MazeComponent(true, Color.green, "end"));
         put(' ', new MazeComponent(true, Color.gray, "space"));
     }};
+
+    private BufferedReader bufferedReader;
 
     /**
      * Constructs a maze by reading a file and converting chars into MazeComponent objects
@@ -94,65 +94,77 @@ public class Maze implements FileInterface {
     @Override
     public char[][] load(String filename) throws MazeMalformedException, MazeSizeMissmatchException, IllegalArgumentException, FileNotFoundException {
 
+        //Create Map
+        char[][] map = null;
+
         // Get relative path
         String filePath = new File("").getAbsolutePath();
         String path = filePath+"\\"+filename;
 
         // Create stream
         FileReader fileReader = new FileReader(path);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-        // Get dimensions
-        String dimensionsLine = null;
-        try {
-            dimensionsLine = bufferedReader.readLine();
-        }
-        catch (Exception e){
-            throw new MazeMalformedException("No text in: " + path);
-        }
-
-        if(dimensionsLine == null)
-            throw new MazeMalformedException("No text in: " + path);
-
-        String[] dimensions = dimensionsLine.split(" ");
-        if(dimensions.length < 2)
-            throw new MazeMalformedException("2 dimensions were note defined in: " + path);
-
-        int height = Integer.parseInt(dimensions[0]);
-        int width = Integer.parseInt(dimensions[1]);
-
-        // Populate 2D Char array
-        char[][] map = new char[width][height];
-        for (int y = 0; y < height; y++){
-
-            String line = null;
+        // All reading operations are wrapped in this try catch to ensure the buffered reader will close even
+        // when an exception is thrown
+        try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+            // Get dimensions
+            String dimensionsLine = null;
             try {
-                line = bufferedReader.readLine();
-            } catch (Exception e){
-                throw new MazeSizeMissmatchException( "The Maze is less tall than specified.");
+                dimensionsLine = bufferedReader.readLine();
+            } catch (Exception e) {
+                throw new MazeMalformedException("No text in: " + path);
             }
 
-            if(line == null)
-                throw new MazeSizeMissmatchException( "The Maze is less tall than specified.");
-            if(line.length() < width)
-                throw new MazeSizeMissmatchException( "Row " + y + "of the maze is shorter than specified.");
+            if (dimensionsLine == null)
+                throw new MazeMalformedException("No text in: " + path);
 
-            for(int x = 0; x < width; x++) {
-                map[x][y] = line.charAt(x);
-                if(!characterToComponent.containsKey(map[x][y]))
-                    throw new IllegalArgumentException("Map should not contain symbol " + map[x][y]);
+            String[] dimensions = dimensionsLine.split(" ");
+            if (dimensions.length < 2)
+                throw new MazeMalformedException("2 dimensions were note defined in: " + path);
+
+            int height = Integer.parseInt(dimensions[0]);
+            int width = Integer.parseInt(dimensions[1]);
+
+            int startPointCount = 0, endPointCount = 0;
+
+            // Populate 2D Char array
+            map = new char[width][height];
+            for (int y = 0; y < height; y++) {
+
+                String line = null;
+                try {
+                    line = bufferedReader.readLine();
+                } catch (Exception e) {
+                    throw new MazeSizeMissmatchException("The Maze is less tall than specified.");
+                }
+
+                if (line == null)
+                    throw new MazeSizeMissmatchException("The Maze is less tall than specified.");
+                if (line.length() < width)
+                    throw new MazeSizeMissmatchException("Row " + y + "of the maze is shorter than specified.");
+
+                for (int x = 0; x < width; x++) {
+
+                    if (!characterToComponent.containsKey(line.charAt(x)))
+                        throw new IllegalArgumentException("Map should not contain symbol " + map[x][y]);
+                    if (line.charAt(x) == 'E') endPointCount++;
+                    if (line.charAt(x) == 'S') startPointCount++;
+
+                    map[x][y] = line.charAt(x);
+                }
             }
-        }
 
-        try {
-            bufferedReader.close();
-            fileReader.close();
-        } catch (Exception e){
-            // ignore
-        }
+            // Ensure there was only one start and one end
+            if (startPointCount != 1 || endPointCount != 1)
+                throw new MazeMalformedException("There was not 1 start and 1 end in the maze.");
 
+        } catch (IOException e) {
+            // HANDLE
+        }
+        
         return map;
     }
+
 
     public Color[][] getColorMap(){
         Color[][] colorMap = new Color[width][height];
