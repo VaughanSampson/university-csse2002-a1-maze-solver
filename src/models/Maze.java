@@ -24,7 +24,6 @@ public class Maze {
         put('E', End);
     }};
 
-
     /**
      * Constructs a maze by reading a file and converting chars into MazeComponent objects
      * to populate a 2D array.

@@ -2,19 +2,13 @@ package controllers;
 
 import io.FileMazeLoader;
 import models.Maze;
-import exceptions.MazeMalformedException;
 
-import exceptions.MazeSizeMissmatchException;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class PathFinderTest {
 
