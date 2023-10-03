@@ -3,49 +3,68 @@ package controllers;
 import io.FileMazeLoader;
 import models.Maze;
 import view.View;
-import view.cmdline.CMDLineView;
+import view.terminal.TerminalView;
 import view.gui.GUIView;
 
-import java.io.File;
-
+/**
+ * Controller which allows a user to load, solve and display a maze.
+ */
 public class MainController {
 
-    public static void solveAndDisplayMaze(String mazePath, boolean usesGUI){
+    /**
+     * Static method to solve and display a maze loaded from a file.
+     * @param filePath The path of the maze to load and solve.
+     * @param usesGUI Whether to use GUI or (otherwise) a terminal interface.
+     */
+    public static void solveAndDisplayMaze(String filePath, boolean usesGUI){
 
-        // Choose view type
+        // Choose view type (GUI or terminal)
         View masterView;
         if(usesGUI)
             masterView = new GUIView();
         else
-            masterView = new CMDLineView();
+            masterView = new TerminalView();
 
-        // Load maze and render solution
-        Maze maze = CreateMazeFromFile(mazePath);
+        // Generate maze from file data
+        Maze maze = CreateMazeFromFile(filePath);
+
+        // Render
         String textDisplay;
-
         if(maze != null) {
-            textDisplay = (PathFinder.findAndDrawPathToEndpoint(maze) != null)? "Exit found." : "Maze unsolvable.";
+            // Alter maze as path is travelled
+            boolean exitFound = PathFinder.drawPathToEndPoint(maze) != null;
+            // Set created message to describe if the maze was solvable
+            textDisplay = (exitFound)? "Exit found." : "Maze unsolvable.";
         }
         else {
-            textDisplay = "Maze " + mazePath + " unsuccessfully loaded.";
+            // Set created message to display that the file path was not
+            // successfully loaded
+            textDisplay = "Maze " + filePath + " unsuccessfully loaded.";
         }
 
+        // Render maze and message to view.
         masterView.generateDisplay(maze, textDisplay);
     }
 
-    private static Maze CreateMazeFromFile(String fileName){
-        // Get complete path
-        String filePath = new File("").getAbsolutePath()+"\\mazes\\"+fileName;
+    /**
+     * Gets a completed Maze instance from a file path if the file path points
+     * to a suitable maze file.
+     * @param filePath Path to maze file.
+     * @return Maze instance generated or null if generation failed.
+     */
+    private static Maze CreateMazeFromFile(String filePath){
+
         Maze maze = null;
 
         try {
-            // Try load
+            // Try load a 2D maze char map from file
             char[][] map = new FileMazeLoader().load(filePath);
+            // If no errors occur, create the Maze instance to be returned
             if(map != null) {
                 maze = new Maze(map);
             }
         } catch (Exception e) {
-            // Log error on fail load
+            // Log error on failure to load a 2D maze char map
             System.out.println("Failed to load: " + filePath);
             e.printStackTrace();
         }

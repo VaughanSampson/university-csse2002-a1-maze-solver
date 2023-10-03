@@ -20,6 +20,7 @@ public class Maze {
     public static final HashMap<Character, MazeTile> CharacterToComponentMap = new HashMap<Character, MazeTile>(){{
         put('#', Wall);
         put(' ', Space);
+        put('.', Space);
         put('S', Start);
         put('E', End);
     }};

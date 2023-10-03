@@ -34,7 +34,7 @@ class PathFinderTest {
 
         Maze impossibleMaze = new Maze(loaded);
 
-        assertNull(PathFinder.findAndDrawPathToEndpoint(impossibleMaze), "Expected to get null from " +
+        assertNull(PathFinder.drawPathToEndPoint(impossibleMaze), "Expected to get null from " +
                 "pathfinder findAndDrawPathToEndpoint() when impossible maze was passed in.");
     }
 
@@ -54,7 +54,7 @@ class PathFinderTest {
 
         Maze possibleMaze = new Maze(loaded);
 
-        assertNotNull(PathFinder.findAndDrawPathToEndpoint(possibleMaze), "Expected to get not null result " +
+        assertNotNull(PathFinder.drawPathToEndPoint(possibleMaze), "Expected to get not null result " +
                 "from pathfinder findAndDrawPathToEndpoint() when a solvable maze was passed in.");
     }
 }

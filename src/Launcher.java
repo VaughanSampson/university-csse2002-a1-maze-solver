@@ -1,4 +1,7 @@
 import  controllers.MainController;
+
+import java.io.File;
+
 public class Launcher {
     public static void main(String[] args) {
 
@@ -21,6 +24,9 @@ public class Launcher {
                     "argument on compile.");
         }
 
-        MainController.solveAndDisplayMaze(mazePath, usesGUI);
+
+        String filePath = new File("").getAbsolutePath()+"\\mazes\\"+mazePath;
+
+        MainController.solveAndDisplayMaze(filePath, usesGUI);
     }
 }

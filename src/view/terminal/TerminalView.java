@@ -1,11 +1,11 @@
-package view.cmdline;
+package view.terminal;
 
 import models.Maze;
 import view.View;
 
 import java.util.HashMap;
 
-public class CMDLineView implements View {
+public class TerminalView implements View {
 
     private static final HashMap<String, String> tileIDToANSIColorMap = new HashMap<String, String>(){{
         put("wall", "\u001B[47m");

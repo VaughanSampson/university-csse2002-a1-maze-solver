@@ -5,6 +5,9 @@ import models.Position;
 
 import java.util.ArrayList;
 
+/**
+ * C
+ */
 public class PathFinder {
     private static final Position[] possibleMovements = {
             new Position(1,0),
@@ -13,11 +16,11 @@ public class PathFinder {
             new Position(-1,0)
     };
 
-    public static ArrayList<Position> findAndDrawPathToEndpoint(Maze maze){
-        return findAndDrawPathToEndpoint(maze, maze.getStart());
+    public static ArrayList<Position> drawPathToEndPoint(Maze maze){
+        return drawPathToEndPoint(maze, maze.getStart());
     }
 
-    public static ArrayList<Position> findAndDrawPathToEndpoint(Maze maze, Position currentPosition){
+    public static ArrayList<Position> drawPathToEndPoint(Maze maze, Position currentPosition){
         ArrayList<Position> list = new ArrayList<>();
         list.add(currentPosition);
 
@@ -31,7 +34,7 @@ public class PathFinder {
             Position attemptMove = currentPosition.add(movement);
             if(maze.getTile(attemptMove).IsTraversable())
             {
-                ArrayList<Position> subList = findAndDrawPathToEndpoint(maze, attemptMove);
+                ArrayList<Position> subList = drawPathToEndPoint(maze, attemptMove);
                 if(subList != null)
                 {
                     maze.setTile(currentPosition, Maze.Path);
