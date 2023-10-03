@@ -1,60 +1,78 @@
 package controllers;
 
-import io.FileMazeLoader;
 import models.Maze;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-
-import java.io.File;
-
+import org.junit.jupiter.api.Test;  
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests PathFinder class.
+ */
 class PathFinderTest {
 
-    FileMazeLoader loader;
+    /**
+     * Map to generate maze which is impossible to solve.
+     */
+    private final char[][] impossibleMazeMap = {
+            {'#', '#','#', '#','#'},
+            {'#', 'S',' ', ' ','#'},
+            {'#', ' ','#', ' ','#'},
+            {'#', ' ','#', ' ','#'},
+            {'#', '#','#', ' ','#'},
+            {'#', '#',' ', ' ','#'},
+            {'#', ' ',' ', '#','#'},
+            {'#', ' ','#', '#','#'},
+            {'#', ' ',' ', ' ','#'},
+            {'#', '#','#', ' ','#'},
+            {'#', ' ','E', '#','#'},
+            {'#', '#','#', '#','#'}
+    };
 
-    @BeforeEach
-    void setUp() {
-        loader = new FileMazeLoader();
-    }
+    /**
+     * Map to generate maze which is possible to solve.
+     */
+    private final char[][] possibleMazeMap = {
+            {'#', '#','#', '#','#'},
+            {'#', 'S',' ', ' ','#'},
+            {'#', ' ','#', ' ','#'},
+            {'#', ' ','#', ' ','#'},
+            {'#', '#','#', ' ','#'},
+            {'#', '#',' ', ' ','#'},
+            {'#', ' ',' ', '#','#'},
+            {'#', ' ','#', '#','#'},
+            {'#', ' ',' ', ' ','#'},
+            {'#', ' ','#', ' ','#'},
+            {'#', ' ','E', '#','#'},
+            {'#', '#','#', '#','#'}
+    };
 
+    /**
+     * Tests if PathFinder correctly fails to solve an impossible maze.
+     */
     @Test
     public void testImpossibleMaze() {
-        String filePath = new File("").getAbsolutePath()+"\\test\\mazes\\"+"impossible_maze.txt";
-        char[][] loaded = null;
+        // Create maze
+        Maze impossibleMaze = new Maze(impossibleMazeMap);
 
-        try{
-            loaded = loader.load(filePath);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            fail("Expected FileMazeLoader load() to throw no exception, but exception was thrown");
-        }
+        // Attempt to solve maze
+        boolean mazeSolved = PathFinder.drawPathToEndPoint(impossibleMaze);
 
-        Maze impossibleMaze = new Maze(loaded);
-
-        assertNull(PathFinder.drawPathToEndPoint(impossibleMaze), "Expected to get null from " +
-                "pathfinder findAndDrawPathToEndpoint() when impossible maze was passed in.");
+        // Assert that maze was not solved
+        assertFalse(mazeSolved,"Expected to fail to find path but succeeded.");
     }
 
-
+    /**
+     * Tests if PathFinder correctly succeeds to solve a possible maze.
+     */
     @Test
     public void testSolvableMaze() {
-        String filePath = new File("").getAbsolutePath()+"\\test\\mazes\\"+"possible_maze.txt";
-        char[][] loaded = null;
+        // Create maze
+        Maze impossibleMaze = new Maze(possibleMazeMap);
 
-        try{
-            loaded = loader.load(filePath);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            fail("Expected FileMazeLoader load() to throw no exception, but exception was thrown");
-        }
+        // Attempt to solve maze
+        boolean mazeSolved = PathFinder.drawPathToEndPoint(impossibleMaze);
 
-        Maze possibleMaze = new Maze(loaded);
-
-        assertNotNull(PathFinder.drawPathToEndPoint(possibleMaze), "Expected to get not null result " +
-                "from pathfinder findAndDrawPathToEndpoint() when a solvable maze was passed in.");
+        // Assert that the maze was solved
+        assertTrue(mazeSolved, "Expected to succeed to find path but failed.");
     }
 }
