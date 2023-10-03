@@ -8,7 +8,7 @@ public class Position {
     private final int x, y;
 
     /**
-     * Constructs postion.
+     * Constructs position.
      * @param x X-axis position value.
      * @param y Y-axis position value.
      */

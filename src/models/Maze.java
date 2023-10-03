@@ -1,169 +1,68 @@
 package models;
 
-import exceptions.MazeMalformedException;
-import exceptions.MazeSizeMissmatchException;
-import io.FileInterface;
-import javafx.geometry.Pos;
-
-import java.awt.*;
-import java.io.*;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Generates and maintains a complete model of a maze.
  */
-public class Maze implements FileInterface {
+public class Maze {
 
     private final int width, height;
-    private MazeComponent[][] map;
+    private MazeTile[][] map;
     private Position start, end;
+    public static final MazeTile Wall = new MazeTile("wall", false),
+            Space = new MazeTile("space", true),
+            End = new MazeTile("end", true),
+            Start = new MazeTile("start", true),
+            Path = new MazeTile("path", false),
+            Travelled = new MazeTile("travelled", false);
 
-    private static final HashMap<Character, MazeComponent> characterToComponent = new HashMap<Character, MazeComponent>(){{
-        put('#', new MazeComponent(false, Color.black, "wall"));
-        put('S', new MazeComponent(false, Color.red, "start"));
-        put('E', new MazeComponent(true, Color.green, "end"));
-        put(' ', new MazeComponent(true, Color.gray, "space"));
+    public static final HashMap<Character, MazeTile> CharacterToComponentMap = new HashMap<Character, MazeTile>(){{
+        put('#', Wall);
+        put(' ', Space);
+        put('S', Start);
+        put('E', End);
     }};
 
-    private BufferedReader bufferedReader;
 
     /**
      * Constructs a maze by reading a file and converting chars into MazeComponent objects
      * to populate a 2D array.
-     * @param fileName Name of file to read.
-     * @throws MazeMalformedException      If the maze file data is not correctly formatted.
-     * @throws MazeSizeMissmatchException  If the maze file dimensions do not match the provided size.
-     * @throws IllegalArgumentException     If a char in the given maze file does not map to a MazeComponent.
-     * @throws FileNotFoundException        If the maze file is not found.
+     * @param map Map of chars acting as maze blueprint.
      */
-    public Maze(String fileName) throws MazeMalformedException, MazeSizeMissmatchException, IllegalArgumentException, FileNotFoundException {
-        char[][] map = load(fileName);
+    public Maze(char[][] map) {
         this.width = map.length;
         this.height = map[0].length;
-        populateMapFromCharMap(map);
+        generateMazeTilesFromCharMap(map);
     }
 
     /**
      * Converts a 2D array of chars into a 2D array of MazeComponent objects.
      * @param map Char map.
-     * @throws IllegalArgumentException If a char in the given char map does not map to a MazeComponent.
      */
-    private void populateMapFromCharMap(char[][] map) throws IllegalArgumentException, MazeMalformedException{
+    private void generateMazeTilesFromCharMap(char[][] map) {
         // Create map
-        this.map = new MazeComponent[this.width][this.height];
+        this.map = new MazeTile[this.width][this.height];
 
         // Populate map
         for(int x = 0; x < this.width; x++){
             for(int y = 0; y < this.height; y++)
             {
-                MazeComponent component = characterToComponent.get(map[x][y]);
+                MazeTile component = CharacterToComponentMap.get(map[x][y]);
                 this.map[x][y] = component;
 
                 // Get start and end
-                if(component.getName().equals("start")) start = new Position(x, y);
-                if(component.getName().equals("end")) end = new Position(x, y);
+                if(component.getTileID().equals("start")) start = new Position(x, y);
+                if(component.getTileID().equals("end")) end = new Position(x, y);
             }
         }
     }
 
-    /**
-     * Reads a maze file. First gets its dimensions then iterates through those
-     * dimensions to build a 2D character array from the file's data.
-     * @param filename The path to the maze file to be loaded.
-     * @return A 2D character array representing the loaded maze.
-     * @throws MazeMalformedException      If the maze data is not correctly formatted.
-     * @throws MazeSizeMissmatchException  If the maze dimensions do not match the provided size
-     * @throws IllegalArgumentException    If a char in the maze file's map does not map to any MazeComponent.
-     * @throws FileNotFoundException        If the maze file is not found.
-     */
-    @Override
-    public char[][] load(String filename) throws MazeMalformedException, MazeSizeMissmatchException, IllegalArgumentException, FileNotFoundException {
-
-        //Create Map
-        char[][] map = null;
-
-        // Get relative path
-        String filePath = new File("").getAbsolutePath();
-        String path = filePath+"\\mazes\\"+filename;
-
-        // Create stream
-        FileReader fileReader = new FileReader(path);
-
-        // All reading operations are wrapped in this try catch to ensure the buffered reader will close even
-        // when an exception is thrown
-        try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-            // Get dimensions
-            String dimensionsLine = null;
-            try {
-                dimensionsLine = bufferedReader.readLine();
-            } catch (Exception e) {
-                throw new MazeMalformedException("No text in: " + path);
-            }
-
-            if (dimensionsLine == null)
-                throw new MazeMalformedException("No text in: " + path);
-
-            String[] dimensions = dimensionsLine.split(" ");
-            if (dimensions.length < 2)
-                throw new MazeMalformedException("2 dimensions were not defined in the maze.");
-
-            int height = Integer.parseInt(dimensions[0]);
-            int width = Integer.parseInt(dimensions[1]);
-
-            if(height % 2 != 1 || width % 2 != 1)
-                throw new MazeMalformedException("The dimensions of the maze must be odd.");
-
-            int startPointCount = 0, endPointCount = 0;
-
-            // Populate 2D Char array
-            map = new char[width][height];
-            for (int y = 0; y < height; y++) {
-
-                String line = null;
-                try {
-                    line = bufferedReader.readLine();
-                } catch (Exception e) {
-                    throw new MazeSizeMissmatchException("The Maze is less tall than specified.");
-                }
-
-                if (line == null)
-                    throw new MazeSizeMissmatchException("The Maze is less tall than specified.");
-                if (line.length() < width)
-                    throw new MazeSizeMissmatchException("Row " + y + "of the maze is shorter than specified.");
-
-                for (int x = 0; x < width; x++) {
-
-                    if (!characterToComponent.containsKey(line.charAt(x)))
-                        throw new IllegalArgumentException(
-                                "The maze should not contain the symbol '" + map[x][y] + "'");
-                    if (line.charAt(x) == 'E') endPointCount++;
-                    if (line.charAt(x) == 'S') startPointCount++;
-
-                    map[x][y] = line.charAt(x);
-                }
-            }
-
-            // Check that there was is one start and one end
-            if (startPointCount != 1 || endPointCount != 1)
-                throw new MazeMalformedException("There was not 1 start and 1 end in the maze.");
-
-        } catch (IOException e) {
-            // HANDLE
+    public MazeTile getTile(int x, int y) {
+        if(x >= width || y >= height) {
+            throw new IndexOutOfBoundsException("Position (" + x + "," + y + ") is outside bounds the of the maze.");
         }
-
-        return map;
-    }
-
-    public Color[][] getColorMap(){
-        Color[][] colorMap = new Color[width][height];
-        for(int x = 0; x < width; x ++){
-            for(int y = 0; y < height; y ++){
-                colorMap[x][y] = map[x][y].getColor();
-            }
-        }
-        return colorMap;
+        return map[x][y];
     }
 
     /**
@@ -172,17 +71,21 @@ public class Maze implements FileInterface {
      * @return MazeComponent object at the given position.
      * @throws IndexOutOfBoundsException If coordinates entered are outside the map's bounds.
      */
-    public MazeComponent getComponent(Position pos) throws IndexOutOfBoundsException {
-        if(pos.getX() >= width || pos.getY() >= height)
-            throw new IndexOutOfBoundsException("Position (" + pos.getX() + "," + pos.getY() + ") is outside bounds of map.");
-        return map[pos.getX()][pos.getY()];
+    public MazeTile getTile(Position pos) {
+       return getTile(pos.getX(), pos.getY());
     }
 
-    public void setComponent(Position pos, MazeComponent mazeComponent)throws IndexOutOfBoundsException {
-        if (pos.getX() < 0 || pos.getX() >= width || pos.getY() < 0 || pos.getY() >= height)
-            throw new IndexOutOfBoundsException("Position (" + pos.getX() + "," + pos.getY() + ") is outside bounds of map.");
-        if(!getComponent(pos).getName().equals("start") && !getComponent(pos).getName().equals("end"))
-            map[pos.getX()][pos.getY()] = mazeComponent;
+    public void setTile(int x, int y, MazeTile mazeTile) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
+            throw new IndexOutOfBoundsException("Position (" + x + "," + y + ") is outside bounds of map.");
+        }
+        if(!getTile(x, y).getTileID().equals("start") && !getTile(x, y).getTileID().equals("end")) {
+            map[x][y] = mazeTile;
+        }
+    }
+
+    public void setTile(Position pos, MazeTile mazeTile) {
+        setTile(pos.getX(), pos.getY(), mazeTile);
     }
 
     /**

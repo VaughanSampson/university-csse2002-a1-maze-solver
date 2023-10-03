@@ -1,77 +1,56 @@
 package controllers;
 
+import io.FileMazeLoader;
 import models.Maze;
-import models.MazeComponent;
-import models.Position;
-import view.MainView;
+import view.View;
+import view.cmdline.CMDLineView;
+import view.gui.GUIView;
 
-import java.awt.*;
-import java.util.ArrayList;
+import java.io.File;
 
 public class MainController {
 
-    private Maze maze;
-    private MainView masterView;
+    public static void solveAndDisplayMaze(String mazePath, boolean usesGUI){
 
-    private final Position[] possibleMovements = {
-            new Position(1,0),
-            new Position(0,-1),
-            new Position(0,1),
-            new Position(-1,0)
-    };
+        // Choose view type
+        View masterView;
+        if(usesGUI)
+            masterView = new GUIView();
+        else
+            masterView = new CMDLineView();
 
-    public MainController(String firstPath){
-        masterView = new MainView();
-        StartMaze(firstPath);
-    }
+        // Load maze and render solution
+        Maze maze = CreateMazeFromFile(mazePath);
+        String textDisplay;
 
-    public void StartMaze(String fileName){
-        maze = LoadMap(fileName);
         if(maze != null) {
-            boolean endExists = (findAndDrawPathToEndpoint(maze.getStart()) != null);
-            masterView.createNewDisplay(maze.getColorMap(), endExists? "Found path." : "No Path exists.");
+            textDisplay = (PathFinder.findAndDrawPathToEndpoint(maze) != null)? "Exit found." : "Maze unsolvable.";
         }
         else {
-            masterView.createNewDisplay(null, "No maze found.");
+            textDisplay = "Maze " + mazePath + " unsuccessfully loaded.";
         }
 
+        masterView.generateDisplay(maze, textDisplay);
     }
 
-    private static Maze LoadMap(String fileName){
+    private static Maze CreateMazeFromFile(String fileName){
+        // Get complete path
+        String filePath = new File("").getAbsolutePath()+"\\mazes\\"+fileName;
+        Maze maze = null;
+
         try {
-            return new Maze(fileName);
-        } catch (Exception e) {
-            // DEAL WITH EXCEPTION
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    public ArrayList<Position> findAndDrawPathToEndpoint(Position currentPosition){
-        ArrayList<Position> list = new ArrayList<>();
-        list.add(currentPosition);
-
-
-        if(!currentPosition.equals(maze.getEnd()))
-        {
-            maze.setComponent(currentPosition, new MazeComponent(false, Color.blue, "travelled"));
-
-            for(Position movement : possibleMovements){
-                Position attemptMove = currentPosition.add(movement);
-                if(maze.getComponent(attemptMove).IsTraversable())
-                {
-                    ArrayList<Position> subList = findAndDrawPathToEndpoint(attemptMove);
-                    if(subList != null)
-                    {
-                        maze.setComponent(currentPosition, new MazeComponent(false, Color.cyan, "path"));
-                        list.addAll(subList);
-                        return list;
-                    }
-                }
+            // Try load
+            char[][] map = new FileMazeLoader().load(filePath);
+            if(map != null) {
+                maze = new Maze(map);
             }
-            return null;
+        } catch (Exception e) {
+            // Log error on fail load
+            System.out.println("Failed to load: " + filePath);
+            e.printStackTrace();
         }
 
-        return list;
+        return maze;
     }
+
 }
