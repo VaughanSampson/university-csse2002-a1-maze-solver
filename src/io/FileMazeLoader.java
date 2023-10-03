@@ -34,24 +34,32 @@ public class FileMazeLoader implements FileInterface {
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             // Get dimensions
             String dimensionsLine = null;
-            try {
-                dimensionsLine = bufferedReader.readLine();
-            } catch (Exception e) {
+            dimensionsLine = bufferedReader.readLine();
+
+            if (dimensionsLine == null) {
                 throw new MazeMalformedException("No text in maze file.");
             }
 
-            if (dimensionsLine == null)
-                throw new MazeMalformedException("No text in maze file.");
-
             String[] dimensions = dimensionsLine.split(" ");
-            if (dimensions.length < 2)
+
+            if (dimensions.length < 2) {
                 throw new MazeMalformedException("2 dimensions were not defined in the maze.");
+            }
 
-            int height = Integer.parseInt(dimensions[0]);
-            int width = Integer.parseInt(dimensions[1]);
+            int height, width;
 
-            if(height % 2 != 1 || width % 2 != 1)
-                throw new MazeMalformedException("The dimensions of the maze must be odd.");
+            try{
+                height = Integer.parseInt(dimensions[0]);
+                width = Integer.parseInt(dimensions[1]);
+            } catch (NumberFormatException e) {
+                throw new MazeMalformedException("First two words were not digits. " +
+                        "Dimensions are not correctly defined.");
+            }
+
+            if(height % 2 != 1 || width % 2 != 1) {
+                throw new MazeMalformedException("At least one dimension of the maze was even. " +
+                        "They must both be be odd.");
+            }
 
             int startPointCount = 0, endPointCount = 0;
 
@@ -60,11 +68,7 @@ public class FileMazeLoader implements FileInterface {
             for (int y = 0; y < height; y++) {
 
                 String line = null;
-                try {
-                    line = bufferedReader.readLine();
-                } catch (Exception e) {
-                    throw new MazeSizeMissmatchException("The Maze is less tall than specified.");
-                }
+                line = bufferedReader.readLine();
 
                 if (line == null)
                     throw new MazeSizeMissmatchException("The Maze is less tall than specified.");
@@ -74,8 +78,9 @@ public class FileMazeLoader implements FileInterface {
                 for (int x = 0; x < width; x++) {
 
                     if (!Maze.CharacterToComponentMap.containsKey(line.charAt(x)))
-                        throw new IllegalArgumentException(
-                                "The maze should not contain the symbol '" + map[x][y] + "'");
+                        throw new IllegalArgumentException(  "The maze should not contain the symbol '"
+                                + map[x][y] + "'");
+
                     if (line.charAt(x) == 'E') endPointCount++;
                     if (line.charAt(x) == 'S') startPointCount++;
 
