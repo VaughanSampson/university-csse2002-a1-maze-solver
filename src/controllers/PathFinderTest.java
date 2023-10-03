@@ -2,7 +2,7 @@ package controllers;
 
 import models.Maze;
 
-import org.junit.jupiter.api.Test;  
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
