@@ -124,7 +124,7 @@ public class FileMazeLoader implements FileInterface {
                     " location specified.");
         }
         catch (IOException e) {
-            // Handle IOExceptions here as it is not part of the
+            // Handle IOExceptions here as throwing it is not part of the
             // parent interface which cannot be altered.
             e.printStackTrace();
         }
