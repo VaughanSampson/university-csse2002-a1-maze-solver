@@ -1,5 +1,6 @@
 package io;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import exceptions.MazeMalformedException;
 
 import exceptions.MazeSizeMissmatchException;
@@ -49,6 +50,16 @@ class FileMazeLoaderTest {
                 MazeMalformedException.class,
                 () -> loader.load(filePath),
                 "Expected load() to throw MazeMalformedException, but it didn't"
+        );
+    }
+
+    @Test
+    public void testIllegalArgumentExceptionOnInvalidDimensions(){
+        String filePath = new File("").getAbsolutePath()+"\\test\\mazes\\"+"invalid_dimensions_maze.txt";
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> loader.load(filePath),
+                "Expected load() to throw IllegalArgumentException, but it didn't"
         );
     }
 
