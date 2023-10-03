@@ -32,13 +32,13 @@ public class MainController {
         String textDisplay;
         if(maze != null) {
             // Alter maze as path is travelled
-            boolean exitFound = PathFinder.drawPathToEndPoint(maze) != null;
+            boolean exitFound = PathFinder.drawPathToEndPoint(maze);
             // Set created message to describe if the maze was solvable
             textDisplay = (exitFound)? "Exit found." : "Maze unsolvable.";
         }
         else {
             // Set created message to display that the file path was not
-            // successfully loaded
+            // successfully loaded.
             textDisplay = "Maze " + filePath + " unsuccessfully loaded.";
         }
 
