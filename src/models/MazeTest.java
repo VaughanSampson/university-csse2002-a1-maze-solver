@@ -24,7 +24,7 @@ class MazeTest {
      * Prepares for each test.
      */
     @BeforeEach
-    public void initialise(){
+    public void setUp(){
         // Set the map to a new map using the small charMap as a blueprint
         maze = new Maze(charMap);
     }
