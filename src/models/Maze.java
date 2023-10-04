@@ -66,11 +66,11 @@ public class Maze {
                 this.map[x][y] = component;
 
                 // Get start
-                if(component.getTileID().equals("start")) {
+                if(component == Start) {
                     start = new Position(x, y);
                 }
                 // Get end
-                if(component.getTileID().equals("end")) {
+                if(component == End) {
                     end = new Position(x, y);
                 }
             }
@@ -109,7 +109,7 @@ public class Maze {
         if (x < 0 || x >= width || y < 0 || y >= height) {
             throw new IndexOutOfBoundsException("Position (" + x + "," + y + ") is outside bounds of map.");
         }
-        if(!getTile(x, y).getTileID().equals("start") && !getTile(x, y).getTileID().equals("end")) {
+        if(!new Position(x, y).equals(start) && !new Position(x, y).equals(end) ) {
             map[x][y] = mazeTile;
         }
     }
