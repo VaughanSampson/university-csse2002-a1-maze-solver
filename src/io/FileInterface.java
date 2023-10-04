@@ -4,7 +4,6 @@ import exceptions.MazeMalformedException;
 import exceptions.MazeSizeMissmatchException;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  * Represents an interface for maze file operations.
