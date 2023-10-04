@@ -21,9 +21,13 @@ class FileMazeLoaderTest {
     /** Loader variable holding instance to test. */
     private final FileMazeLoader loader = new FileMazeLoader();
 
+    /** Current system's file separator for paths */
+    private final String fileSeparator = System.getProperty("file.separator");
+
     /** Path to the folder of test mazes. */
     private final String folderPath = new File("")
-            .getAbsolutePath()+"\\test\\mazes\\";
+            .getAbsolutePath() + fileSeparator + "test"
+            + fileSeparator+"mazes" + fileSeparator;
 
     /**
      * Tests if the loader correctly throws a MazeMalformedException

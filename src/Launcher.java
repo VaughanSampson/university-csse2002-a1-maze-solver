@@ -33,9 +33,10 @@ public class Launcher {
             throw new IllegalArgumentException("A maze file's name ending in " +
                     "'.txt' must be entered as a program argument on compile.");
         }
-
         // Creates complete path to maze file to load
-        String filePath = new File("").getAbsolutePath()+"\\mazes\\"+mazePath;
+        String fileSeparator = System.getProperty("file.separator");
+        String filePath = new File("").getAbsolutePath()
+                + fileSeparator + "mazes" + fileSeparator + mazePath;
 
         // Calls the MainController to load, solve and display the maze
         MainController.solveAndDisplayMaze(filePath, usesGUI);
