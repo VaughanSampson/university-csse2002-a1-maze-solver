@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PathFinderTest {
 
     /**
-     * Map to generate maze which is impossible to solve.
+     * 2D char array map used to generate a maze which is impossible to solve.
      */
     private final char[][] impossibleMazeMap = {
             {'#', '#','#', '#','#'},
@@ -29,7 +29,7 @@ class PathFinderTest {
     };
 
     /**
-     * Map to generate maze which is possible to solve.
+     * 2D char array map used to generate a maze which can be solved.
      */
     private final char[][] possibleMazeMap = {
             {'#', '#','#', '#','#'},
