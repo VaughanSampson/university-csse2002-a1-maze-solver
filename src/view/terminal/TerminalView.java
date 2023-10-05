@@ -31,14 +31,19 @@ public class TerminalView implements View {
     @Override
     public void generateDisplay(Maze maze, String message) {
         // Prints message
-        System.out.println("\u001B[40m"+message);
+        System.out.println(message);
+
+        // Ensure maze doesn't print if null
+        if(maze == null){
+            return;
+        }
 
         // Paints the background color of spaces to display a maze
         for(int y = 0; y < maze.getHeight(); y++){
             for(int x = 0; x < maze.getWidth(); x++) {
                 System.out.print(tileIDToANSIColorMap.get(maze.getTile(x, y).getTileID()) + "  ");
             }
-            System.out.print("\u001B[40m\n");
+            System.out.println("\033[0m");
         }
     }
 

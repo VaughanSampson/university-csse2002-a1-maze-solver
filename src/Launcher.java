@@ -31,9 +31,9 @@ public class Launcher {
         // Throws exception if there was no valid maze file path program argument
         if(mazePath == null) {
             throw new IllegalArgumentException("A maze file's name ending in " +
-                    "'.txt' must be entered as a program argument on compile.");
+                    "'.txt' must be entered as a program argument.");
         }
-        
+
         // Creates complete path to maze file to load
         String fileSeparator = System.getProperty("file.separator");
         String filePath = new File("").getAbsolutePath() + fileSeparator;

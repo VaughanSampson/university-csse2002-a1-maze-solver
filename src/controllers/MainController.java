@@ -39,7 +39,7 @@ public class MainController {
         else {
             // Set created message to display that the file path was not
             // successfully loaded.
-            textDisplay = "Maze " + filePath + " unsuccessfully loaded.";
+            textDisplay = "Maze unsuccessfully loaded.";
         }
 
         // Render maze and message to view.
