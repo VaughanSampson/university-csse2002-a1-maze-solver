@@ -33,12 +33,29 @@ public class Launcher {
             throw new IllegalArgumentException("A maze file's name ending in " +
                     "'.txt' must be entered as a program argument on compile.");
         }
+        
         // Creates complete path to maze file to load
         String fileSeparator = System.getProperty("file.separator");
-        String filePath = new File("").getAbsolutePath()
-                + fileSeparator + "mazes" + fileSeparator + mazePath;
+        String filePath = new File("").getAbsolutePath() + fileSeparator;
+
+        // Alter path if run from IntelliJ as that will be executing from the
+        // route directory of the whole project.
+        if(isRunningFromIntelliJ()) {
+            filePath += "src" + fileSeparator;
+        }
+
+        filePath += "mazes" + fileSeparator + mazePath;
 
         // Calls the MainController to load, solve and display the maze
         MainController.solveAndDisplayMaze(filePath, usesGUI);
+    }
+
+    /**
+     * Checks if the program is being run from the IntelliJ editor.
+     * @return True if the program is run from IntelliJ.
+     */
+    public static boolean isRunningFromIntelliJ()
+    {
+        return System.getProperty("java.class.path").contains("idea_rt.jar");
     }
 }

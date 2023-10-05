@@ -30,3 +30,6 @@ bin/
 
 ### Javadocs ###
 /javadocs/
+
+### Inner Build ###
+*.class
